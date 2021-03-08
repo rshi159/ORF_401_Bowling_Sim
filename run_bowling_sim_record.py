@@ -6,11 +6,12 @@ import numpy as np
 
 # check which pins are left standing.
 # o is all bowling objects, pin list is the list of pins that we set up. pin_init_pos is the initial position of the pins. Tolerance is the lineardistance away from the initial position that we consider a knock down.
-def check_pins(o, pins,  pin_init_pos, tolerance = 0.005):
+def check_pins(o, pins,  pin_init_pos, tolerance = 0.001):
     pin_list = o[1:]
     pins_remaining = []
     for i in pins:
         dist = bc.distance(pin_list[i].pos, pin_init_pos[i])
+        print(str(i) + "   "+str(dist))
         if dist <= tolerance:
             pins_remaining.append(i)
     return np.array(pins_remaining)
@@ -39,7 +40,7 @@ def plot_scene(o,dt):
     plt.draw()
     plt.pause(0.1)
     plt.cla()
-def forward_sim(o, plot = False):
+def forward_sim(o, plot = True):
     dt = 0.01
     time = np.arange(50)
     for i in time:
@@ -58,74 +59,16 @@ def bowl(pins):
 
 def main():
     pins_knocked = []
-    for frame in range(9):
-        print("Frane " + str(frame+1))
-        print("================")
-        # ball_dist is how far in front of the ball to spawn the pins.
-        # angle: right is positive.
-        # speed: how fast the ball is going.
-        # ball_mass, ball_diam, ball_vel, ball_spin are ball parameters
-        # pin_diam, pin_height are pin parameters
-        # def init_lane(pins, ball_dist, ball_mass, ball_diam, ball_vel, ball_spin, pin_diam, pin_height):
-        # pins = [1,2,3]
-        pins = range(10)
-        remain = bowl(pins)
-        pins_knocked.append(len(remain))
-        print(remain)
-        if len(remain) == 0:
-            pins_knocked.append(0)
-            print(0)
-        else:
-            remain = bowl(remain)
-            pins_knocked.append(len(remain))
-            print(remain)
-    # frame 10 shenanigans
-    print("Frane " + str(10))
-    print("================")
-    remain = bowl(range(10))
+    # ball_dist is how far in front of the ball to spawn the pins.
+    # angle: right is positive.
+    # speed: how fast the ball is going.
+    # ball_mass, ball_diam, ball_vel, ball_spin are ball parameters
+    # pin_diam, pin_height are pin parameters
+    # def init_lane(pins, ball_dist, ball_mass, ball_diam, ball_vel, ball_spin, pin_diam, pin_height):
+    # pins = [1,2,3]
+    pins = range(10)
+    remain = bowl(pins)
     pins_knocked.append(len(remain))
     print(remain)
-    if len(remain) == 0:
-        remain = bowl(range(10))
-        pins_knocked.append(len(remain))
-        print(remain)
-        if len(remain) == 0:
-            remain = bowl(range(10))
-            pins_knocked.append(len(remain))
-            print(remain)
-            if len(remain) == 0:
-                remain = bowl(range(10))
-                pins_knocked.append(len(remain))
-                print(remain)
-            else:
-                remain = bowl(remain)
-                pins_knocked.append(len(remain))
-                print(remain)
-        else:
-            remain = bowl(remain)
-            pins_knocked.append(len(remain))
-            print(remain)
-            if len(remain) == 0:
-                remain = bowl(range(10))
-                pins_knocked.append(len(remain))
-                print(remain)
-            else:
-                remain = bowl(remain)
-                pins_knocked.append(len(remain))
-                print(remain)
-    else:
-        remain = bowl(remain)
-        pins_knocked.append(len(remain))
-        print(remain)
-        if len(remain) == 0:
-            remain = bowl(range(10))
-            pins_knocked.append(len(remain))
-            print(remain)
-        else:
-            remain = bowl(remain)
-            pins_knocked.append(0)
-            print(0)
-    print(pins_knocked)
-    return(pins_knocked)
 if __name__ == "__main__":
     main()

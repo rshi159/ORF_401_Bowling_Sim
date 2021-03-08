@@ -57,11 +57,11 @@ class bowling_pin:
         self.collision_rel_dist = [0, 0.5*self.height]
         # the radi of the spheres, respectively are
         # self.collision_radi = [self.height/3, self.height/6]
-        self.collision_radi = [self.height/3, self.height/6]
+        self.collision_radi = [self.height/4, self.height/6]
         # position of the collision radi in the world frame
         self.collision_wf = np.array([self.pos, self.pos])
         # set a decay constant, which dampens motion.
-        self.dampen = 0.025
+        self.dampen = 0.10
     def update_KE(self):
         # sum liner and angular energies.
         self.KE = np.sum(self.mass*np.power(self.vel,2))/2 + np.sum(self.I*np.power(self.ang,2))
@@ -158,7 +158,7 @@ def calc_collision(bowling_obj,indicies, mass):
             tot_energy = tot_energy + bowling_obj[idx].KE
         avg_vel += np.sqrt(np.sum(np.square(bowling_obj[idx].vel)))
     # generate y components
-    components = np.random.rand(len(indicies),2) * avg_vel
+    components = np.random.rand(len(indicies),2) * tot_energy/4
     # print(components)
     # print(indicies)
     if ball_in_collision:
