@@ -122,7 +122,7 @@ class bowling_ball:
     # the angles are in "3d" space we will project the pin onto the plane of the lane
     # Assume that the size of the collision spheres are constant. Only distance is squeezed.
     def update_position(self,dt):
-        self.pos = self.pos + np.array([self.vel[0]*np.sin(self.spin), self.vel[1]*np.cos(self.spin)])*dt
+        self.pos = self.pos + np.array([self.vel[0]*np.sin(self.spin), self.vel[1]*np.cos(self.spin)])*dt +  np.array([self.vel[0], self.vel[1]])*dt
         self.update_KE()
 
 # what happens in the case of a collision between multiple objects.
@@ -178,9 +178,11 @@ def calc_collision(bowling_obj,indicies, mass):
 def init_ball_vel(ball_vel, pins, pin_pos):
     ball_pos = np.array([0,0])
     first_pin = np.min(pins)
+    print(first_pin)
     fp_pos = pin_pos[first_pin]
+    print(fp_pos)
     vec = (fp_pos-ball_pos)/np.sqrt(np.sum(np.square(fp_pos-ball_pos)))
-    ball_vel = vec*ball_vel
+    ball_vel = vec*np.sqrt(np.sum(np.square(ball_vel)))
     return ball_vel
 # pins is a list with indicies of pins to spawn.
 # ball_dist is how far in front of the ball to spawn the pins.
@@ -190,14 +192,14 @@ def init_ball_vel(ball_vel, pins, pin_pos):
 # pin_diam, pin_height are pin parameters
 def init_lane(pins, ball_dist, ball_mass, ball_diam, ball_vel, ball_spin, pin_diam, pin_height):
     bowling_obj = []
-    ball_target_first_pin_vel = init_bal_vell(ball_vel, pins, pin_pos)
-    bowling_obj.append(bowling_ball(ball_mass,ball_diam,ball_target_first_pin_vel,ball_spin))
     # distance between each pin in meters
     ps = 12*0.0254
     # distance between rows of pins
     rd = ps * np.sqrt(3)/2
     pin_pos = np.array([[0,0], [-ps/2,rd],[ps/2, rd], [-ps, 2*rd],[0, 2*rd],[ps, 2*rd], [-3/2*ps, 3*rd],[-1/2*ps, 3*rd],[1/2*ps, 3*rd],[3/2*ps, 3*rd]])
     pin_pos[:,1] = pin_pos[:,1] + ball_dist
+    ball_target_first_pin_vel = init_ball_vel(ball_vel, pins, pin_pos)
+    bowling_obj.append(bowling_ball(ball_mass,ball_diam,ball_target_first_pin_vel,ball_spin))
     for i in range(10):
         if i in pins:
             bowling_obj.append(bowling_pin(pin_diam,pin_height,pin_pos[i], is_collidable = True))
