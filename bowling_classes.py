@@ -175,6 +175,13 @@ def calc_collision(bowling_obj,indicies, mass):
         for i in range(len(indicies)):
             bowling_obj[indicies[i]].update_collision(norm_components[i,:])
 
+def init_ball_vel(ball_vel, pins, pin_pos):
+    ball_pos = np.array([0,0])
+    first_pin = np.min(pins)
+    fp_pos = pin_pos[first_pin]
+    vec = (fp_pos-ball_pos)/np.sqrt(np.sum(np.square(fp_pos-ball_pos)))
+    ball_vel = vec*ball_vel
+    return ball_vel
 # pins is a list with indicies of pins to spawn.
 # ball_dist is how far in front of the ball to spawn the pins.
 # angle: right is positive.
@@ -183,7 +190,8 @@ def calc_collision(bowling_obj,indicies, mass):
 # pin_diam, pin_height are pin parameters
 def init_lane(pins, ball_dist, ball_mass, ball_diam, ball_vel, ball_spin, pin_diam, pin_height):
     bowling_obj = []
-    bowling_obj.append(bowling_ball(ball_mass,ball_diam,ball_vel,ball_spin))
+    ball_target_first_pin_vel = init_bal_vell(ball_vel, pins, pin_pos)
+    bowling_obj.append(bowling_ball(ball_mass,ball_diam,ball_target_first_pin_vel,ball_spin))
     # distance between each pin in meters
     ps = 12*0.0254
     # distance between rows of pins
