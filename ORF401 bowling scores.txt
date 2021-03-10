@@ -1,0 +1,50 @@
+input = [3, 3, 3, 4, 5, 2, 3, 1, 5, 1, 6, 1, 10, 0, 3, 7, 8, 1, 9, 1, 8]
+score = []
+
+def read9frames(roll1, roll2):
+    if roll1+roll2 < 10:
+        return roll1+roll2
+    elif roll1 == 10:
+        return "STRIKE"
+    elif roll1+roll2 == 10:
+        return "SPARE"
+        
+def read10frame(roll1, roll2, roll3):
+    if roll1+roll2 < 10:
+        return roll1+roll2
+    elif roll1+roll2 == 10:
+        return roll1+roll2+roll3
+    elif roll1==10 and roll2 != 10:
+        return roll1+2*roll2+2*roll3
+    elif roll1==10 and roll2==10:
+        return roll1+roll2+roll3
+        
+def readScore9frames(roll1, roll2):
+    score.append(read9frames(roll1, roll2))
+    
+def readScore10frame(roll1, roll2, roll3):
+    score.append(read10frame(roll1, roll2, roll3))
+    
+def takescore(input):
+    for i in range(0, 18, 2):
+        readScore9frames(input[i], input[i+1])
+    readScore10frame(input[18], input[19], input[20])
+    
+def totalscore(score, input):
+    totalscore = 0
+    for i in range(0, 8):
+        if 'STRIKE' == score[i]:
+            if 'STRIKE' == score[i+1]:
+                totalscore = totalscore + 20 + input[2*(i+1)+1]
+            else:
+                totalscore = totalscore + 10 + input[2*(i+1)-1] + input[2*(i+1)]
+        elif 'SPARE' == score[i]:
+            totalscore = totalscore + 10 + input[2*(i+1)-1]
+        else:
+            totalscore = totalscore + score[i]
+    totalscore = totalscore + score[9]
+    return totalscore
+    
+takescore(input)
+print (score)
+print(totalscore(score, input))
